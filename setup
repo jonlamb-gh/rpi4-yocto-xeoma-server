@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+git submodule update --init --recursive
+
+mkdir -p out/conf/
+
+cp -a conf/* out/conf/
+
+exit 0

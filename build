@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+source poky/oe-init-build-env $PWD/out
+
+bitbake rpilinux-image
+
+exit 0

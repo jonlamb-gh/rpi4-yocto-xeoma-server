@@ -21,6 +21,7 @@ TODOS
 * static ip/networking
 * put the `-archivecache` in `/dev/shm` or on the USB3 ssd
 * bunch of things todo in https://madaidans-insecurities.github.io/guides/linux-hardening.html
+* remove the multimedia/graphics layers/recipes/packages
 
 
 opts for systemd unit

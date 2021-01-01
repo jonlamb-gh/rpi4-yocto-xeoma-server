@@ -23,7 +23,7 @@ SYSTEMD_SERVICE_${PN} = "xeoma.service"
 USERADD_PACKAGES = "${PN}"
 USERADD_PARAM_${PN} = "--uid 1200 --home-dir /home/xeoma --system --create-home --shell /bin/false xeoma"
 
-FILES_${PN} = "${bindir}/xeoma /home/xeoma/.config/Xeoma"
+FILES_${PN} = "${bindir}/xeoma /home/xeoma/.config/Xeoma ${systemd_unitdir}/systemd/xeoma.service"
 
 do_install () {
 	install -m 0755 -d ${D}${bindir}

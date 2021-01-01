@@ -1,0 +1,45 @@
+# Rules for xeoma.home
+# 
+# WARNING: the `IP_TABLES_`* are replaced at bitbake
+# build time with corresponding environment variables
+#
+# IP_TABLES_XEOMA_SERVER_PORT : xeoma server port
+# IP_TABLES_XEOMA_SERVER_CIDR : local network CIDR range connecting to xeoma server to accept
+# IP_TABLES_XEOMA_HTTPS_CIDR : local network CIDR range connecting to xeoma HTTPS to accept
+# IP_TABLES_ICMP_ALLOW_CIDR : local network CIDR range accepting ICMP
+# IP_TABLES_SSH_ALLOW_CIDR : local network CIDR range accepting ssh connections
+
+*filter
+
+# Allow all loopback (lo0) traffic
+-A INPUT -i lo -j ACCEPT
+# Drop all traffic to 127/8 that doesn't use lo0
+-A INPUT ! -i lo -d 127.0.0.0/8 -j DROP
+
+# Allow connections that originate from this server
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+
+# Allow local network client connections to the xeoma server
+-A INPUT -s IP_TABLES_XEOMA_SERVER_CIDR -p tcp --dport IP_TABLES_XEOMA_SERVER_PORT -j ACCEPT
+
+# Allow local network HTTPS connections to the xeoma server
+-A INPUT -s IP_TABLES_XEOMA_HTTPS_CIDR -p tcp --dport 443 -j ACCEPT
+
+# Allow SSH from local dev machines
+-A INPUT -s IP_TABLES_SSH_ALLOW_CIDR -p tcp -m state --state NEW --dport 22 -j ACCEPT
+
+# Allow local network ICMP
+# https://security.stackexchange.com/questions/22711
+-A INPUT -s IP_TABLES_ICMP_ALLOW_CIDR -p icmp -m limit --limit 20/s --limit-burst 5 -j ACCEPT
+
+# Log iptables denied calls (access via 'dmesg' command)
+-A INPUT -m limit --limit 5/min -j LOG --log-prefix "iptables denied: " --log-level 7
+
+# Default drop policy
+-P INPUT DROP
+-P FORWARD DROP
+-P OUTPUT DROP
+
+COMMIT

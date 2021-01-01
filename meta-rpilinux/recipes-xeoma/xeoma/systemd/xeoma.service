@@ -6,7 +6,7 @@ StartLimitIntervalSec=33
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/xeoma -core -startdelay 5 -disableDownloads -noscan -noscanptzandaudio -programdir /home/xeoma/.config/Xeoma
+ExecStart=/usr/bin/xeoma -core -startdelay 5 -disableDownloads -noscan -noscanptzandaudio -serverport 8897 -programdir /home/xeoma/.config/Xeoma
 ExecStartPost=/bin/sleep 3
 RestartSec=5
 Restart=on-failure

@@ -26,13 +26,14 @@ USERADD_PARAM_${PN} = "--uid 1200 --home-dir /home/xeoma --system --create-home 
 FILES_${PN} = "${bindir}/xeoma /home/xeoma/.config/Xeoma ${systemd_unitdir}/systemd/xeoma.service"
 
 do_install () {
-	install -m 0755 -d ${D}${bindir}
-	install -m 0755 ${S}/xeoma.app ${D}/${bindir}/xeoma
+    install -m 0755 -d ${D}${bindir}
+    install -m 0755 ${S}/xeoma.app ${D}/${bindir}/xeoma
 
     install -d ${D}/${systemd_unitdir}/system
     install -m 0644 ${THISDIR}/systemd/xeoma.service ${D}/${systemd_unitdir}/system
 
     install -d -m 755 ${D}/home/xeoma/.config/Xeoma
-    chown -R xeoma ${D}/home/xeoma/.config
-    chgrp -R xeoma ${D}/home/xeoma/.config
+    
+    chown -R xeoma ${D}/home/xeoma
+    chgrp -R xeoma ${D}/home/xeoma
 }

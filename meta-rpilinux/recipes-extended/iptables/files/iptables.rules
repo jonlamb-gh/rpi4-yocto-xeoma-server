@@ -1,13 +1,15 @@
 # Rules for xeoma.home
-# 
-# WARNING: the `IP_TABLES_`* are replaced at bitbake
+#
+# WARNING: the `IPTABLES_`* are replaced at bitbake
 # build time with corresponding environment variables
 #
-# IP_TABLES_XEOMA_SERVER_PORT : xeoma server port
-# IP_TABLES_XEOMA_SERVER_CIDR : local network CIDR range connecting to xeoma server to accept
-# IP_TABLES_XEOMA_HTTPS_CIDR : local network CIDR range connecting to xeoma HTTPS to accept
-# IP_TABLES_ICMP_ALLOW_CIDR : local network CIDR range accepting ICMP
-# IP_TABLES_SSH_ALLOW_CIDR : local network CIDR range accepting ssh connections
+# IPTABLES_XEOMA_RTSP_UDP_ALLOW_PORT_RANGE : IP camera RTSP port range connecting to xeoma server to accept
+# IPTABLES_XEOMA_RTSP_ALLOW_IP_RANGE : IP camera ip addr range connecting to xeoma server to accept
+# IPTABLES_XEOMA_SERVER_ALLOW_PORT_RANGE : local network port range connecting to xeoma server to accept
+# IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE : local network ip addr range connecting to xeoma server to accept
+# IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE : local network ip addr range connecting to xeoma HTTPS to accept
+# IPTABLES_ICMP_ALLOW_IP_RANGE : local network ip addr range accepting ICMP
+# IPTABLES_SSH_ALLOW_CIDR : local network CIDR range accepting ssh connections
 
 *filter
 
@@ -17,22 +19,25 @@
 -A INPUT ! -i lo -d 127.0.0.0/8 -j DROP
 
 # Allow connections that originate from this server
--A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
--A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A OUTPUT -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT
+
+# Allow IP camera UDP RTSP traffic to the xeoma server
+-A INPUT -m iprange --src-range IPTABLES_XEOMA_RTSP_ALLOW_IP_RANGE -p udp --match multiport --dports IPTABLES_XEOMA_RTSP_UDP_ALLOW_PORT_RANGE -j ACCEPT
 
 # Allow local network client connections to the xeoma server
--A INPUT -s IP_TABLES_XEOMA_SERVER_CIDR -p tcp --dport IP_TABLES_XEOMA_SERVER_PORT -j ACCEPT
+-A INPUT -m iprange --src-range IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE -p tcp --match multiport --dports IPTABLES_XEOMA_SERVER_ALLOW_PORT_RANGE -j ACCEPT
 
 # Allow local network HTTPS connections to the xeoma server
--A INPUT -s IP_TABLES_XEOMA_HTTPS_CIDR -p tcp --dport 443 -j ACCEPT
+-A INPUT -m iprange --src-range IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE -p tcp --dport 443 -j ACCEPT
 
 # Allow SSH from local dev machines
--A INPUT -s IP_TABLES_SSH_ALLOW_CIDR -p tcp -m state --state NEW --dport 22 -j ACCEPT
+-A INPUT -s IPTABLES_SSH_ALLOW_CIDR -p tcp -m state --state NEW --dport 22 -j ACCEPT
 
 # Allow local network ICMP
 # https://security.stackexchange.com/questions/22711
--A INPUT -s IP_TABLES_ICMP_ALLOW_CIDR -p icmp -m limit --limit 20/s --limit-burst 5 -j ACCEPT
+-A INPUT -m iprange --src-range IPTABLES_ICMP_ALLOW_IP_RANGE -p icmp -m limit --limit 20/s --limit-burst 5 -j ACCEPT
 
 # Log iptables denied calls (access via 'dmesg' command)
 -A INPUT -m limit --limit 5/min -j LOG --log-prefix "iptables denied: " --log-level 7

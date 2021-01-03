@@ -15,12 +15,8 @@ TODOS
 * put the `-archivecache` in `/dev/shm` or on the USB3 ssd
 * remove the multimedia/graphics/unused layers/recipes/packages
 * ssl/tls configs
+* ntp
 * module blacklist
-* need to fix the ssh user `me` login issue
-  - PTY allocation request failed on channel 0
-  - enable login in `/etc/shadow` with the `ssh-user.bb` recipe, probably add `--password "*"`
-  - or enable PAM in `sshd_config` and `local.conf` distro features, `DISTRO_FEATURES_append += " pam"`
-* sudo for `me` user
 
 opts for systemd unit
 ```
@@ -75,10 +71,6 @@ exit 0
 * [securetty](meta-rpilinux/recipes-extended/shadow-securetty/files/securetty) configured to only allow root login from `ttyAMA0` (UART1, GPIO 14/15) in [`shadow-securetty_%.bbappend`](meta-rpilinux/recipes-extended/shadow-securetty/shadow-securetty_%.bbappend)
 * [iptables.rules](meta-rpilinux/recipes-extended/iptables/files/iptables.rules) configured at build-time using environment variables in [`iptables_%.bbappend`](meta-rpilinux/recipes-extended/iptables/iptables_%.bbappend)
 * [sysctl.conf](meta-rpilinux/recipes-extended/procps/files/sysctl.conf) settings in [`procps_%.bbappend`](meta-rpilinux/recipes-extended/procps/procps_%.bbappend)
-* [sshd_config](meta-rpilinux/recipes-extended/openssh/files/sshd_config) setup in [`openssh_%.bbappend`](meta-rpilinux/recipes-extended/openssh/openssh_%.bbappend)
-  - `sshd_config` only allows user `me` via pki
-* `me` user setup in [ssh-user.bb](meta-rpilinux/recipes-ssh-user/ssh-user/ssh-user.bb)
-* Env var `SSH_AUTH_KEYS_ME_USER` gets copied to rootfs `/home/me/.ssh/authorized_keys` in [ssh-user.bb](meta-rpilinux/recipes-ssh-user/ssh-user/ssh-user.bb)
 * Image packages in [rpilinux-image.bb](meta-rpilinux/recipes-rpilinux/images/rpilinux-image.bb)
 * Xeoma recipe in [xeoma.bb](meta-rpilinux/recipes-xeoma/xeoma/xeoma.bb)
   - Systemd unit in [xeoma.service](meta-rpilinux/recipes-xeoma/xeoma/systemd/xeoma.service)
@@ -98,12 +90,7 @@ export IPTABLES_XEOMA_SERVER_ALLOW_PORT_RANGE=12345:434545
 export IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE=a.b.c.d-a.b.c.e
 export IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE=a.b.c.d-a.b.c.e
 export IPTABLES_ICMP_ALLOW_IP_RANGE=a.b.c.d-a.b.c.e
-export IPTABLES_SSH_ALLOW_CIDR=a.b.c.d/e
-export BB_ENV_EXTRAWHITE="$BB_ENV_EXTRAWHITE IPTABLES_XEOMA_RTSP_UDP_ALLOW_PORT_RANGE IPTABLES_XEOMA_RTSP_ALLOW_IP_RANGE IPTABLES_XEOMA_SERVER_ALLOW_PORT_RANGE IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE IPTABLES_ICMP_ALLOW_IP_RANGE IPTABLES_SSH_ALLOW_CIDR"
-
-# Used to setup `me` user keys for ssh
-expoirt SSH_AUTH_KEYS_ME_USER="/path/to/authorized_keys"
-export BB_ENV_EXTRAWHITE="$BB_ENV_EXTRAWHITE SSH_ME_USER_PUB_KEY_PATH"
+export BB_ENV_EXTRAWHITE="$BB_ENV_EXTRAWHITE IPTABLES_XEOMA_RTSP_UDP_ALLOW_PORT_RANGE IPTABLES_XEOMA_RTSP_ALLOW_IP_RANGE IPTABLES_XEOMA_SERVER_ALLOW_PORT_RANGE IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE IPTABLES_ICMP_ALLOW_IP_RANGE"
 ```
 
 ```bash

@@ -3,12 +3,16 @@
 Yocto based [xeoma](https://felenasoft.com/xeoma/en/) server running on a Raspberry Pi 4.
 
 TODOS
-* make a systemd unit + recipe for the fan controller
-    https://download.argon40.com/argon1.sh
-    https://www.raspberrypi.org/forums/viewtopic.php?t=266101
-    https://github.com/kounch/argonone
-       https://github.com/kounch/argonone/blob/feature/RaspberryPi4/argononed.py
-    https://github.com/Elrondo46/argonone
+* make a systemd unit + recipe for the fan and power controller
+  - write a Rust port of the python stuff, remove the python packages/deps, add a gpio user
+  - https://download.argon40.com/argon1.sh
+  - https://www.raspberrypi.org/forums/viewtopic.php?t=266101
+  - https://github.com/kounch/argonone
+    * https://github.com/kounch/argonone/blob/feature/RaspberryPi4/argononed.py
+  - https://github.com/Elrondo46/argonone
+  - https://github.com/rust-embedded/rust-sysfs-gpio
+  - https://github.com/rust-embedded/gpio-utils
+  - https://github.com/golemparts/rppal#gpio
 * update fstab recipe for the USB3 ssd mount
   - add provisioning script for formatting the ssd, chmod/chown xeoma user stuff
 * replace `kernel-modules` in `core-image-minimal.bb` with only the needed modules like here: http://git.yoctoproject.org/cgit.cgi/poky/tree/meta/recipes-extended/iptables/iptables_1.4.9.bb?id=f992d6b4348bc2fde4a415bcc10b1a770aa9a0bc
@@ -17,6 +21,7 @@ TODOS
 * ssl/tls configs
 * ntp
 * module blacklist
+* change ip tables xeoma server range to just the single ip, doesn't need to be a range
 
 opts for systemd unit
 ```
@@ -112,16 +117,16 @@ bitbake -e rpilinux-image | grep ^DEPLOY_DIR_IMAGE
 cd /path/to/build/tmp/deploy/images/raspberrypi4-64/
 cp bcm2711-rpi-4-b.dtb /media/card/BOOT/
 
+# firmware
+cd /path/to/build/tmp/deploy/images/raspberrypi4-64/bcm2711-bootfiles
+cp -a ./* /media/card/BOOT/
+
 # kernel
 cp Image /media/card/BOOT/kernel_rpilinux.img
 
 # rootfs
 cd /media/card/ROOT/
 sudo tar -xjf /path/tobuild/tmp/deploy/images/raspberrypi4-64/rpilinux-image-raspberrypi4-64.tar.bz2
-
-# firmware
-cd /path/to/build/tmp/deploy/images/raspberrypi4-64/bcm2711-bootfiles
-cp ./* /media/card/BOOT/
 ```
 
 ### Initial Setup

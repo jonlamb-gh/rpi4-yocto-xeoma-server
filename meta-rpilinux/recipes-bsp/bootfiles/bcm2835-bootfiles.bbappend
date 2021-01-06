@@ -26,7 +26,7 @@ do_after_deploy() {
     # Make a cmdline.txt
     # See https://madaidans-insecurities.github.io/guides/linux-hardening.html
     touch ${DEPLOY_DIR_IMAGE}/${BCM2711_DIR}/cmdline.txt
-    echo 'dwc_otg.lpm_enable=0 console=serial0,115200 console=ttyS0 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait ipv6.disable=1 slab_nomerge slub_debug=FZ init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on vsyscall=none debugfs=off oops=panic module.sig_enforce=1 lockdown=confidentiality quiet loglevel=0' > ${DEPLOY_DIR_IMAGE}/${BCM2711_DIR}/cmdline.txt
+    echo 'dwc_otg.lpm_enable=0 console=serial0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait ipv6.disable=1 slab_nomerge slub_debug=FZ init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on vsyscall=none debugfs=off oops=panic module.sig_enforce=1 lockdown=confidentiality quiet loglevel=0' > ${DEPLOY_DIR_IMAGE}/${BCM2711_DIR}/cmdline.txt
 
 }
 

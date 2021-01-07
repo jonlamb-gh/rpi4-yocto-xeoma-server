@@ -13,6 +13,12 @@ TODOS
   - https://github.com/rust-embedded/rust-sysfs-gpio
   - https://github.com/rust-embedded/gpio-utils
   - https://github.com/golemparts/rppal#gpio
+  - https://crates.io/crates/ruspiro-mailbox
+    * talks to the hw
+  - https://crates.io/crates/rpi-mailbox
+    * talks to the kernel
+    * needs some tweaks: https://github.com/raspberrypi/linux/pull/2824/files
+    * tmp/work-shared/raspberrypi4-64/kernel-source/drivers/char/broadcom/vcio.c
 * update fstab recipe for the USB3 ssd mount
   - add provisioning script for formatting the ssd, chmod/chown xeoma user stuff
 * replace `kernel-modules` in `core-image-minimal.bb` with only the needed modules like here: http://git.yoctoproject.org/cgit.cgi/poky/tree/meta/recipes-extended/iptables/iptables_1.4.9.bb?id=f992d6b4348bc2fde4a415bcc10b1a770aa9a0bc

@@ -22,12 +22,15 @@ TODOS
 * update fstab recipe for the USB3 ssd mount
   - add provisioning script for formatting the ssd, chmod/chown xeoma user stuff
 * replace `kernel-modules` in `core-image-minimal.bb` with only the needed modules like here: http://git.yoctoproject.org/cgit.cgi/poky/tree/meta/recipes-extended/iptables/iptables_1.4.9.bb?id=f992d6b4348bc2fde4a415bcc10b1a770aa9a0bc
+* restrict the `OUTPUT` iptables rules
+* update sysctl.conf ICMP rules, or remove iptables, currently disabled in the kernel
 * put the `-archivecache` in `/dev/shm` or on the USB3 ssd
 * remove the multimedia/graphics/unused layers/recipes/packages
 * ssl/tls configs
 * ntp
 * module blacklist
 * change ip tables xeoma server range to just the single ip, doesn't need to be a range
+* sudo for `me` ssh user, or at least in the `xeoma` group for archive management
 
 opts for systemd unit
 ```
@@ -86,8 +89,10 @@ exit 0
 * Xeoma recipe in [xeoma.bb](meta-rpilinux/recipes-xeoma/xeoma/xeoma.bb)
   - Systemd unit in [xeoma.service](meta-rpilinux/recipes-xeoma/xeoma/systemd/xeoma.service)
 * Custom `config.txt` and `cmdline.txt` in [bcm2711-bootfiles (`bcm2835-bootfiles.bbappend`)](meta-rpilinux/recipes-bsp/bootfiles/bcm2835-bootfiles.bbappend)
-
-* TODO bootfiles/etc all the config stuff
+* [sshd_config](meta-rpilinux/recipes-extended/openssh/files/sshd_config) setup in [`openssh_%.bbappend`](meta-rpilinux/recipes-extended/openssh/openssh_%.bbappend)
+  - `sshd_config` only allows user `me` via pki
+* `me` user setup in [ssh-user.bb](meta-rpilinux/recipes-ssh-user/ssh-user/ssh-user.bb)
+* Env var `SSH_AUTH_KEYS_ME_USER` gets copied to rootfs `/home/me/.ssh/authorized_keys` in [ssh-user.bb](meta-rpilinux/recipes-ssh-user/ssh-user/ssh-user.bb)
 
 ### Build
 
@@ -101,7 +106,13 @@ export IPTABLES_XEOMA_SERVER_ALLOW_PORT_RANGE=12345:434545
 export IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE=a.b.c.d-a.b.c.e
 export IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE=a.b.c.d-a.b.c.e
 export IPTABLES_ICMP_ALLOW_IP_RANGE=a.b.c.d-a.b.c.e
-export BB_ENV_EXTRAWHITE="$BB_ENV_EXTRAWHITE IPTABLES_XEOMA_RTSP_UDP_ALLOW_PORT_RANGE IPTABLES_XEOMA_RTSP_ALLOW_IP_RANGE IPTABLES_XEOMA_SERVER_ALLOW_PORT_RANGE IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE IPTABLES_ICMP_ALLOW_IP_RANGE"
+export IPTABLES_SSH_ALLOW_CIDR=a.b.c.d/e
+
+export BB_ENV_EXTRAWHITE="$BB_ENV_EXTRAWHITE IPTABLES_XEOMA_RTSP_UDP_ALLOW_PORT_RANGE IPTABLES_XEOMA_RTSP_ALLOW_IP_RANGE IPTABLES_XEOMA_SERVER_ALLOW_PORT_RANGE IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE IPTABLES_ICMP_ALLOW_IP_RANGE IPTABLES_SSH_ALLOW_CIDR"
+
+# Used to setup `me` user keys for ssh
+export SSH_AUTH_KEYS_ME_USER="/path/to/authorized_keys"
+export BB_ENV_EXTRAWHITE="$BB_ENV_EXTRAWHITE SSH_AUTH_KEYS_ME_USER"
 ```
 
 ```bash
@@ -137,7 +148,7 @@ sudo tar -xjf /path/tobuild/tmp/deploy/images/raspberrypi4-64/rpilinux-image-ras
 
 ### Initial Setup
 
-* Change the `root` password
+* Change the `root` password, default is `root`
     ```bash
     passwd
     ```

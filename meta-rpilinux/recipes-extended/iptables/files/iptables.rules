@@ -9,6 +9,7 @@
 # IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE : local network ip addr range connecting to xeoma server to accept
 # IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE : local network ip addr range connecting to xeoma HTTPS to accept
 # IPTABLES_ICMP_ALLOW_IP_RANGE : local network ip addr range accepting ICMP
+# IPTABLES_SSH_ALLOW_CIDR : local network CIDR range accepting ssh connections
 
 *filter
 
@@ -30,6 +31,9 @@
 
 # Allow local network HTTPS connections to the xeoma server
 -A INPUT -m iprange --src-range IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE -p tcp --dport 443 -j ACCEPT
+
+# Allow SSH from local dev machines	
+-A INPUT -s IPTABLES_SSH_ALLOW_CIDR -p tcp -m state --state NEW --dport 22 -j ACCEPT
 
 # Allow local network ICMP
 # https://security.stackexchange.com/questions/22711

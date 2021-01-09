@@ -19,33 +19,20 @@ TODOS
     * talks to the kernel
     * needs some tweaks: https://github.com/raspberrypi/linux/pull/2824/files
     * tmp/work-shared/raspberrypi4-64/kernel-source/drivers/char/broadcom/vcio.c
-* update fstab recipe for the USB3 ssd mount
-  - add provisioning script for formatting the ssd, chmod/chown xeoma user stuff
 * replace `kernel-modules` in `core-image-minimal.bb` with only the needed modules like here: http://git.yoctoproject.org/cgit.cgi/poky/tree/meta/recipes-extended/iptables/iptables_1.4.9.bb?id=f992d6b4348bc2fde4a415bcc10b1a770aa9a0bc
 * restrict the `OUTPUT` iptables rules
-* update sysctl.conf ICMP rules, or remove iptables, currently disabled in the kernel
-* put the `-archivecache` in `/dev/shm` or on the USB3 ssd
+* update sysctl.conf ICMP rules, or remove iptables ICMP rules, currently disabled in the kernel
 * remove the multimedia/graphics/unused layers/recipes/packages
 * ssl/tls configs
 * ntp
 * module blacklist
 * change ip tables xeoma server range to just the single ip, doesn't need to be a range
-* sudo for `me` ssh user, or at least in the `xeoma` group for archive management
 
-opts for systemd unit
+other opts for systemd unit
 ```
--serverport <p>
 -connectioninfoport <p>
 -sslconnection
 -webaddr <addr>
--programdir <d>
--archivecache <d>
--startdelay 5
--disableDownloads
--core
--noscan
--noscanptzandaudio
--log
 ```
 
 ## Hardware
@@ -88,11 +75,18 @@ exit 0
 * Image packages in [rpilinux-image.bb](meta-rpilinux/recipes-rpilinux/images/rpilinux-image.bb)
 * Xeoma recipe in [xeoma.bb](meta-rpilinux/recipes-xeoma/xeoma/xeoma.bb)
   - Systemd unit in [xeoma.service](meta-rpilinux/recipes-xeoma/xeoma/systemd/xeoma.service)
+  - Unit checks existence/permissions of the storage drive `/mnt/xeoma`
+  - Depends on `mnt-xeoma.mount`
 * Custom `config.txt` and `cmdline.txt` in [bcm2711-bootfiles (`bcm2835-bootfiles.bbappend`)](meta-rpilinux/recipes-bsp/bootfiles/bcm2835-bootfiles.bbappend)
 * [sshd_config](meta-rpilinux/recipes-extended/openssh/files/sshd_config) setup in [`openssh_%.bbappend`](meta-rpilinux/recipes-extended/openssh/openssh_%.bbappend)
   - `sshd_config` only allows user `me` via pki
 * `me` user setup in [ssh-user.bb](meta-rpilinux/recipes-ssh-user/ssh-user/ssh-user.bb)
 * Env var `SSH_AUTH_KEYS_ME_USER` gets copied to rootfs `/home/me/.ssh/authorized_keys` in [ssh-user.bb](meta-rpilinux/recipes-ssh-user/ssh-user/ssh-user.bb)
+* [fstab](meta-rpilinux/recipes-core/base-files/fstab) in [`base-files_3.0.14.bbappend`](meta-rpilinux/recipes-core/base-files/base-files_3.0.14.bbappend)
+  - Assumes disk is `/dev/sda`, ext4 partion `/dev/sda1`
+  - Mount point `/mnt/xeoma`
+  - Cache `-archivecache` in `/mnt/xeoma/cache`
+  - Data `-programdir` in `/mnt/xeoma/data`
 
 ### Build
 
@@ -152,6 +146,18 @@ sudo tar -xjf /path/tobuild/tmp/deploy/images/raspberrypi4-64/rpilinux-image-ras
     ```bash
     passwd
     ```
+* Setup archive mount permissions
+    ```bash
+    mkdir -p /mnt/xeoma/data
+    chmod 0700 /mnt/xeoma/data
+
+    mkdir -p /mnt/xeoma/cache
+    chmod 0700 /mnt/xeoma/cache
+
+    # Could also use 800:800 for running on the build host
+    chown -R xeoma:xeoma /mnt/xeoma
+    chmod 0700 /mnt/xeoma
+    ```
 * Set `xeoma` server admin password
     ```bash
     systemctl stop xeoma
@@ -160,7 +166,7 @@ sudo tar -xjf /path/tobuild/tmp/deploy/images/raspberrypi4-64/rpilinux-image-ras
     ```
 * Format the USB3 SSD (if needed)
     ```bash
-    TODO
+    TODO ext4
     ```
 * Kill `iptables` (if needed)
     ```bash

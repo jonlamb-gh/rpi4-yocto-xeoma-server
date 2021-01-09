@@ -22,9 +22,11 @@ SYSTEMD_AUTO_ENABLE = "enable"
 SYSTEMD_SERVICE_${PN} = "xeoma.service"
 
 USERADD_PACKAGES = "${PN}"
-USERADD_PARAM_${PN} = "--uid 1200 --home-dir /home/xeoma --system --create-home --shell /bin/false xeoma"
+USERADD_PARAM_${PN} = "--uid 800 --system --shell /bin/false xeoma"
 
-FILES_${PN} = "${bindir}/xeoma /home/xeoma/.config/Xeoma ${systemd_unitdir}/systemd/xeoma.service"
+FILES_${PN} += "${bindir}/xeoma ${systemd_unitdir}/systemd/xeoma.service"
+
+REQUIRED_DISTRO_FEATURES = "systemd"
 
 do_install () {
     install -m 0755 -d ${D}${bindir}
@@ -32,9 +34,4 @@ do_install () {
 
     install -d ${D}/${systemd_unitdir}/system
     install -m 0644 ${THISDIR}/systemd/xeoma.service ${D}/${systemd_unitdir}/system
-
-    install -d -m 755 ${D}/home/xeoma/.config/Xeoma
-    
-    chown -R xeoma ${D}/home/xeoma
-    chgrp -R xeoma ${D}/home/xeoma
 }

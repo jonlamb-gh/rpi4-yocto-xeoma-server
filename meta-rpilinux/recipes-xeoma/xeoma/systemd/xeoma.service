@@ -1,13 +1,14 @@
 [Unit]
 Description=XeomaCore
-After=network.target syslog.target
+After=network.target syslog.target mnt-xeoma.mount
 StartLimitBurst=5
 StartLimitIntervalSec=33
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/xeoma -core -startdelay 5 -disableDownloads -noscan -noscanptzandaudio -serverport 8897 -programdir /home/xeoma/.config/Xeoma
-ExecStartPost=/bin/sleep 3
+ExecStart=/usr/bin/xeoma -core -startdelay 5 -disableDownloads -noscan -noscanptzandaudio -serverport 8897 -programdir /mnt/xeoma/data -archivecache /mnt/xeoma/cache
+ExecStartPre=+/bin/sh -c "[ -d /mnt/xeoma/data ] && [ -r /mnt/xeoma/data ] && [ -w /mnt/xeoma/data ] && [ -x /mnt/xeoma/data ]"
+ExecStartPre=+/bin/sh -c "[ -d /mnt/xeoma/cache ] && [ -r /mnt/xeoma/cache ] && [ -w /mnt/xeoma/cache ] && [ -x /mnt/xeoma/cache ]"
 RestartSec=5
 Restart=on-failure
 User=xeoma

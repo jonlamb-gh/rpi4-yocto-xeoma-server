@@ -43,7 +43,7 @@ Client wrapper script:
 #!/usr/bin/env bash
 # file: $HOME/bin/xeoma-client
 set -e
-xeoma -client -noscan -noscanptzandaudio
+xeoma -client -noscan -noscanptzandaudio xeoma.home:8897
 exit 0
 ```
 

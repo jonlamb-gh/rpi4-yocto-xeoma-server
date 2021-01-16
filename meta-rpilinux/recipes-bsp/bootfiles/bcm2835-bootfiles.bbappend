@@ -22,6 +22,7 @@ do_after_deploy() {
     echo 'gpu_mem=512' >> ${DEPLOY_DIR_IMAGE}/${BCM2711_DIR}/config.txt
     echo 'dtoverlay=disable-bt' >> ${DEPLOY_DIR_IMAGE}/${BCM2711_DIR}/config.txt
     echo 'dtoverlay=disable-wifi' >> ${DEPLOY_DIR_IMAGE}/${BCM2711_DIR}/config.txt
+    echo 'dtparam=i2c_arm=on' >> ${DEPLOY_DIR_IMAGE}/${BCM2711_DIR}/config.txt
 
     # Make a cmdline.txt
     # See https://madaidans-insecurities.github.io/guides/linux-hardening.html

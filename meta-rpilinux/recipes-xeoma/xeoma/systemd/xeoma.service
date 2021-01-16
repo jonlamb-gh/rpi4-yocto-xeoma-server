@@ -1,5 +1,5 @@
 [Unit]
-Description=XeomaCore
+Description=XeomaCore Service
 After=network.target syslog.target mnt-xeoma.mount
 StartLimitBurst=5
 StartLimitIntervalSec=33

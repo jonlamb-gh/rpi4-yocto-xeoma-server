@@ -1,0 +1,13 @@
+[Unit]
+Description=Argon ONE M.2 Fan Controller Service
+After=syslog.target
+
+[Service]
+Type=simple
+Restart=on-failure
+RestartSec=5
+Environment="RUST_LOG=warn"
+ExecStart=/usr/bin/argon-fan-ctl -c /etc/argonone/config.toml
+
+[Install]
+WantedBy=default.target

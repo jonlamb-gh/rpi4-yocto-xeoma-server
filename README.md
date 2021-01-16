@@ -3,22 +3,6 @@
 Yocto based [xeoma](https://felenasoft.com/xeoma/en/) server running on a Raspberry Pi 4.
 
 TODOS
-* make a systemd unit + recipe for the fan and power controller
-  - write a Rust port of the python stuff, remove the python packages/deps, add a gpio user
-  - https://download.argon40.com/argon1.sh
-  - https://www.raspberrypi.org/forums/viewtopic.php?t=266101
-  - https://github.com/kounch/argonone
-    * https://github.com/kounch/argonone/blob/feature/RaspberryPi4/argononed.py
-  - https://github.com/Elrondo46/argonone
-  - https://github.com/rust-embedded/rust-sysfs-gpio
-  - https://github.com/rust-embedded/gpio-utils
-  - https://github.com/golemparts/rppal#gpio
-  - https://crates.io/crates/ruspiro-mailbox
-    * talks to the hw
-  - https://crates.io/crates/rpi-mailbox
-    * talks to the kernel
-    * needs some tweaks: https://github.com/raspberrypi/linux/pull/2824/files
-    * tmp/work-shared/raspberrypi4-64/kernel-source/drivers/char/broadcom/vcio.c
 * replace `kernel-modules` in `core-image-minimal.bb` with only the needed modules like here: http://git.yoctoproject.org/cgit.cgi/poky/tree/meta/recipes-extended/iptables/iptables_1.4.9.bb?id=f992d6b4348bc2fde4a415bcc10b1a770aa9a0bc
 * restrict the `OUTPUT` iptables rules
 * update sysctl.conf ICMP rules, or remove iptables ICMP rules, currently disabled in the kernel
@@ -69,16 +53,20 @@ exit 0
 ### Config
 
 * Bitbake config in [local.conf](conf/local.conf)
-* [securetty](meta-rpilinux/recipes-extended/shadow-securetty/files/securetty) configured to only allow root login from `ttyAMA0` (UART1, GPIO 14/15) in [`shadow-securetty_%.bbappend`](meta-rpilinux/recipes-extended/shadow-securetty/shadow-securetty_%.bbappend)
-* [iptables.rules](meta-rpilinux/recipes-extended/iptables/files/iptables.rules) configured at build-time using environment variables in [`iptables_%.bbappend`](meta-rpilinux/recipes-extended/iptables/iptables_%.bbappend)
-* [sysctl.conf](meta-rpilinux/recipes-extended/procps/files/sysctl.conf) settings in [`procps_%.bbappend`](meta-rpilinux/recipes-extended/procps/procps_%.bbappend)
+* [securetty](meta-rpilinux/recipes-extended/shadow-securetty/files/securetty) configured to only allow root login from `ttyAMA0` (UART1, GPIO 14/15) in [`shadow-securetty_%.bbappend`](meta-rpilinux/recipes-extended/shadow-securetty/shadow-securetty_%25.bbappend)
+* [iptables.rules](meta-rpilinux/recipes-extended/iptables/files/iptables.rules) configured at build-time using environment variables in [`iptables_%.bbappend`](meta-rpilinux/recipes-extended/iptables/iptables_%25.bbappend)
+* [sysctl.conf](meta-rpilinux/recipes-extended/procps/files/sysctl.conf) settings in [`procps_%.bbappend`](meta-rpilinux/recipes-extended/procps/procps_%25.bbappend)
 * Image packages in [rpilinux-image.bb](meta-rpilinux/recipes-rpilinux/images/rpilinux-image.bb)
 * Xeoma recipe in [xeoma.bb](meta-rpilinux/recipes-xeoma/xeoma/xeoma.bb)
   - Systemd unit in [xeoma.service](meta-rpilinux/recipes-xeoma/xeoma/systemd/xeoma.service)
   - Unit checks existence/permissions of the storage drive `/mnt/xeoma`
   - Depends on `mnt-xeoma.mount`
+* Argon ONE M.2 fan controller recipe in [argonone.bb](meta-rpilinux/recipes-rpi-utils/argonone/argonone.bb)
+  - A Rust port of the `argononed.py` service in [argon1.sh](https://download.argon40.com/argon1.sh)
+  - Source git repo: [rpi4-argon-fan-controller](https://github.com/jonlamb-gh/rpi4-argon-fan-controller)
+  - Systemd unit in [argononed.service](meta-rpilinux/recipes-rpi-utils/argonone/systemd/argononed.service)
 * Custom `config.txt` and `cmdline.txt` in [bcm2711-bootfiles (`bcm2835-bootfiles.bbappend`)](meta-rpilinux/recipes-bsp/bootfiles/bcm2835-bootfiles.bbappend)
-* [sshd_config](meta-rpilinux/recipes-extended/openssh/files/sshd_config) setup in [`openssh_%.bbappend`](meta-rpilinux/recipes-extended/openssh/openssh_%.bbappend)
+* [sshd_config](meta-rpilinux/recipes-extended/openssh/files/sshd_config) setup in [`openssh_%.bbappend`](meta-rpilinux/recipes-extended/openssh/openssh_%25.bbappend)
   - `sshd_config` only allows user `me` via pki
 * `me` user setup in [ssh-user.bb](meta-rpilinux/recipes-ssh-user/ssh-user/ssh-user.bb)
 * Env var `SSH_AUTH_KEYS_ME_USER` gets copied to rootfs `/home/me/.ssh/authorized_keys` in [ssh-user.bb](meta-rpilinux/recipes-ssh-user/ssh-user/ssh-user.bb)
@@ -166,9 +154,9 @@ sudo tar -xjf /path/tobuild/tmp/deploy/images/raspberrypi4-64/rpilinux-image-ras
     ```
 * Format the USB3 SSD (if needed)
     ```bash
-    TODO ext4
+    TODO ext4 mkfs stuff
     ```
-* Kill `iptables` (if needed)
+* Temporarily disable `iptables` (if needed)
     ```bash
     systemctl stop iptables
     iptables -F
@@ -179,6 +167,10 @@ sudo tar -xjf /path/tobuild/tmp/deploy/images/raspberrypi4-64/rpilinux-image-ras
     iptables-restore /etc/iptables/iptables.rules
     systemctl start iptables
     iptables -L -n -v
+    ```
+* Check the services
+    ```bash
+    systemctl status
     ```
 
 ## Links

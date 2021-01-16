@@ -1,0 +1,5 @@
+update_interval_seconds = 30
+temperature_min = 33
+temperature_max = 65
+fan_speed_min = 0
+fan_speed_max = 100

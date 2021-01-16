@@ -4,7 +4,6 @@ Yocto based [xeoma](https://felenasoft.com/xeoma/en/) server running on a Raspbe
 
 TODOS
 * replace `kernel-modules` in `core-image-minimal.bb` with only the needed modules like here: http://git.yoctoproject.org/cgit.cgi/poky/tree/meta/recipes-extended/iptables/iptables_1.4.9.bb?id=f992d6b4348bc2fde4a415bcc10b1a770aa9a0bc
-* restrict the `OUTPUT` iptables rules
 * update sysctl.conf ICMP rules, or remove iptables ICMP rules, currently disabled in the kernel
 * remove the multimedia/graphics/unused layers/recipes/packages
 * ssl/tls configs
@@ -89,8 +88,9 @@ export IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE=a.b.c.d-a.b.c.e
 export IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE=a.b.c.d-a.b.c.e
 export IPTABLES_ICMP_ALLOW_IP_RANGE=a.b.c.d-a.b.c.e
 export IPTABLES_SSH_ALLOW_CIDR=a.b.c.d/e
+export IPTABLES_ROUTER_IP=a.b.c.d
 
-export BB_ENV_EXTRAWHITE="$BB_ENV_EXTRAWHITE IPTABLES_XEOMA_RTSP_UDP_ALLOW_PORT_RANGE IPTABLES_XEOMA_RTSP_ALLOW_IP_RANGE IPTABLES_XEOMA_SERVER_ALLOW_PORT_RANGE IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE IPTABLES_ICMP_ALLOW_IP_RANGE IPTABLES_SSH_ALLOW_CIDR"
+export BB_ENV_EXTRAWHITE="$BB_ENV_EXTRAWHITE IPTABLES_XEOMA_RTSP_UDP_ALLOW_PORT_RANGE IPTABLES_XEOMA_RTSP_ALLOW_IP_RANGE IPTABLES_XEOMA_SERVER_ALLOW_PORT_RANGE IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE IPTABLES_ICMP_ALLOW_IP_RANGE IPTABLES_SSH_ALLOW_CIDR IPTABLES_ROUTER_IP"
 
 # Used to setup `me` user keys for ssh
 export SSH_AUTH_KEYS_ME_USER="/path/to/authorized_keys"
@@ -159,10 +159,7 @@ sudo tar -xjf /path/tobuild/tmp/deploy/images/raspberrypi4-64/rpilinux-image-ras
 * Temporarily disable `iptables` (if needed)
     ```bash
     systemctl stop iptables
-    iptables -F
-    iptables -P INPUT ACCEPT
-    iptables -P OUTPUT ACCEPT
-    iptables -P FORWARD ACCEPT
+    iptables -F && iptables -P INPUT ACCEPT && iptables -P OUTPUT ACCEPT && iptables -P FORWARD ACCEPT
 
     iptables-restore /etc/iptables/iptables.rules
     systemctl start iptables

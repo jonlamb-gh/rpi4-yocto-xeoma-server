@@ -10,6 +10,7 @@
 # IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE : local network ip addr range connecting to xeoma HTTPS to accept
 # IPTABLES_ICMP_ALLOW_IP_RANGE : local network ip addr range accepting ICMP
 # IPTABLES_SSH_ALLOW_CIDR : local network CIDR range accepting ssh connections
+# IPTABLES_ROUTER_IP : local IP address of the router
 
 *filter
 
@@ -18,10 +19,16 @@
 # Drop all traffic to 127/8 that doesn't use lo0
 -A INPUT ! -i lo -d 127.0.0.0/8 -j DROP
 
-# Allow connections that originate from this server
+# Allow local DNS lookups (tcp, udp port 53) to the router
+-A OUTPUT -p udp -d IPTABLES_ROUTER_IP --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+-A INPUT  -p udp -s IPTABLES_ROUTER_IP --sport 53 -m state --state ESTABLISHED     -j ACCEPT
+-A OUTPUT -p tcp -d IPTABLES_ROUTER_IP --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+-A INPUT  -p tcp -s IPTABLES_ROUTER_IP --sport 53 -m state --state ESTABLISHED     -j ACCEPT
+
+# Allow connections that originate from this server, destined to LAN
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
--A OUTPUT -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT
+-A FORWARD -m iprange --dst-range IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A OUTPUT -m iprange --dst-range IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT
 
 # Allow IP camera UDP RTSP traffic to the xeoma server
 -A INPUT -m iprange --src-range IPTABLES_XEOMA_RTSP_ALLOW_IP_RANGE -p udp --match multiport --dports IPTABLES_XEOMA_RTSP_UDP_ALLOW_PORT_RANGE -j ACCEPT
@@ -32,7 +39,7 @@
 # Allow local network HTTPS connections to the xeoma server
 -A INPUT -m iprange --src-range IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE -p tcp --dport 443 -j ACCEPT
 
-# Allow SSH from local dev machines	
+# Allow SSH from local dev machines
 -A INPUT -s IPTABLES_SSH_ALLOW_CIDR -p tcp -m state --state NEW --dport 22 -j ACCEPT
 
 # Allow local network ICMP

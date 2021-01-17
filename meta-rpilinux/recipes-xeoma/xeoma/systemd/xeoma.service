@@ -6,7 +6,7 @@ StartLimitIntervalSec=33
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/xeoma -core -startdelay 5 -disableDownloads -noscan -noscanptzandaudio -serverport 8897 -programdir /mnt/xeoma/data -archivecache /mnt/xeoma/cache
+ExecStart=/usr/bin/xeoma -core -startdelay 5 -disableDownloads -noscan -noscanptzandaudio -uselocaltime -serverport 8897 -programdir /mnt/xeoma/data -archivecache /mnt/xeoma/cache
 ExecStartPre=+/bin/sh -c "[ -d /mnt/xeoma/data ] && [ -r /mnt/xeoma/data ] && [ -w /mnt/xeoma/data ] && [ -x /mnt/xeoma/data ]"
 ExecStartPre=+/bin/sh -c "[ -d /mnt/xeoma/cache ] && [ -r /mnt/xeoma/cache ] && [ -w /mnt/xeoma/cache ] && [ -x /mnt/xeoma/cache ]"
 RestartSec=5

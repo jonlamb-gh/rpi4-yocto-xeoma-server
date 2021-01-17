@@ -3,11 +3,8 @@
 Yocto based [xeoma](https://felenasoft.com/xeoma/en/) server running on a Raspberry Pi 4.
 
 TODOS
-* replace `kernel-modules` in `core-image-minimal.bb` with only the needed modules like here: http://git.yoctoproject.org/cgit.cgi/poky/tree/meta/recipes-extended/iptables/iptables_1.4.9.bb?id=f992d6b4348bc2fde4a415bcc10b1a770aa9a0bc
-* update sysctl.conf ICMP rules, or remove iptables ICMP rules, currently disabled in the kernel
 * remove the multimedia/graphics/unused layers/recipes/packages
 * ssl/tls configs
-* module blacklist
 * change ip tables xeoma server range to just the single ip, doesn't need to be a range
 
 other opts for systemd unit
@@ -42,7 +39,7 @@ Client wrapper script:
 #!/usr/bin/env bash
 # file: $HOME/bin/xeoma-client
 set -e
-xeoma -client -noscan -noscanptzandaudio xeoma.home:8897
+xeoma -client -noscan -noscanptzandaudio -uselocaltime xeoma.home:8897
 exit 0
 ```
 

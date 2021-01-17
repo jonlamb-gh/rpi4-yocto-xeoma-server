@@ -19,6 +19,10 @@
 # Drop all traffic to 127/8 that doesn't use lo0
 -A INPUT ! -i lo -d 127.0.0.0/8 -j DROP
 
+# Allow NTP
+-A OUTPUT -p udp -m udp -m multiport --dports 123 -m state --state NEW -j ACCEPT
+-A INPUT -m state --state NEW -p udp --dport 123 -j ACCEPT
+
 # Allow local DNS lookups (tcp, udp port 53) to the router
 -A OUTPUT -p udp -d IPTABLES_ROUTER_IP --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
 -A INPUT  -p udp -s IPTABLES_ROUTER_IP --sport 53 -m state --state ESTABLISHED     -j ACCEPT

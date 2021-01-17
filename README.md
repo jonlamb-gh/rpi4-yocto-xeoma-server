@@ -7,7 +7,6 @@ TODOS
 * update sysctl.conf ICMP rules, or remove iptables ICMP rules, currently disabled in the kernel
 * remove the multimedia/graphics/unused layers/recipes/packages
 * ssl/tls configs
-* ntp
 * module blacklist
 * change ip tables xeoma server range to just the single ip, doesn't need to be a range
 
@@ -168,6 +167,10 @@ sudo tar -xjf /path/tobuild/tmp/deploy/images/raspberrypi4-64/rpilinux-image-ras
 * Check the services
     ```bash
     systemctl status
+    ```
+* Check time/date/NTP
+    ```bash
+    timedatectl status
     ```
 
 ## Links

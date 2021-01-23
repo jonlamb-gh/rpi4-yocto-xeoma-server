@@ -3,7 +3,7 @@ require recipes-core/images/core-image-minimal.bb
 IMAGE_INSTALL += " libstdc++"
 IMAGE_INSTALL += " openssl libcrypto libssl"
 IMAGE_INSTALL += " openssh openssh-sftp-server ssh-user"
-IMAGE_INSTALL += " usbutils mtd-utils"
+IMAGE_INSTALL += " usbutils mtd-utils udev"
 IMAGE_INSTALL += " tzdata"
 IMAGE_INSTALL += " ffmpeg x264"
 IMAGE_INSTALL += " vim"

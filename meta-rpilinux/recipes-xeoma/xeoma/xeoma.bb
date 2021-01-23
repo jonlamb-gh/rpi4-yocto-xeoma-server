@@ -2,7 +2,7 @@ DESCRIPTION = "xeoma"
 SECTION = "apps"
 HOMEPAGE = "https://felenasoft.com/xeoma/en/"
 LICENSE = "CLOSED"
-RDEPENDS_${PN} = "libusb1 alsa-lib"
+RDEPENDS_${PN} = "libusb1 alsa-lib udev"
 
 inherit systemd useradd
 
@@ -24,7 +24,7 @@ SYSTEMD_SERVICE_${PN} = "xeoma.service"
 USERADD_PACKAGES = "${PN}"
 USERADD_PARAM_${PN} = "--uid 800 --system --shell /bin/false xeoma"
 
-FILES_${PN} += "${bindir}/xeoma ${systemd_unitdir}/systemd/xeoma.service"
+FILES_${PN} += "${bindir}/xeoma ${systemd_unitdir}/systemd/xeoma.service ${sysconfdir}/udev/rules.d/99-xeoma-usb-key.rules"
 
 REQUIRED_DISTRO_FEATURES = "systemd"
 
@@ -34,4 +34,7 @@ do_install () {
 
     install -d ${D}/${systemd_unitdir}/system
     install -m 0644 ${THISDIR}/systemd/xeoma.service ${D}/${systemd_unitdir}/system
+
+    install -d ${D}${sysconfdir}/udev/rules.d
+    install -m 0644 ${THISDIR}/udev/99-xeoma-usb-key.rules ${D}${sysconfdir}/udev/rules.d/99-xeoma-usb-key.rules
 }

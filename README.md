@@ -54,6 +54,7 @@ exit 0
 * Image packages in [rpilinux-image.bb](meta-rpilinux/recipes-rpilinux/images/rpilinux-image.bb)
 * Xeoma recipe in [xeoma.bb](meta-rpilinux/recipes-xeoma/xeoma/xeoma.bb)
   - Systemd unit in [xeoma.service](meta-rpilinux/recipes-xeoma/xeoma/systemd/xeoma.service)
+  - Udev rule for the Senselock USB license key in [99-xeoma-usb-key.rules](meta-rpilinux/recipes-xeoma/xeoma/udev/99-xeoma-usb-key.rules)
   - Unit checks existence/permissions of the storage drive `/mnt/xeoma`
   - Depends on `mnt-xeoma.mount`
 * Argon ONE M.2 fan controller recipe in [argonone.bb](meta-rpilinux/recipes-rpi-utils/argonone/argonone.bb)

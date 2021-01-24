@@ -2,7 +2,7 @@ DESCRIPTION = "xeoma"
 SECTION = "apps"
 HOMEPAGE = "https://felenasoft.com/xeoma/en/"
 LICENSE = "CLOSED"
-RDEPENDS_${PN} = "libusb1 alsa-lib udev"
+RDEPENDS_${PN} = "libusb1 hidapi alsa-lib udev"
 
 inherit systemd useradd
 

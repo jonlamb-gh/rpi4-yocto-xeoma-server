@@ -61,6 +61,7 @@ exit 0
   - A Rust port of the `argononed.py` service in [argon1.sh](https://download.argon40.com/argon1.sh)
   - Source git repo: [rpi4-argon-fan-controller](https://github.com/jonlamb-gh/rpi4-argon-fan-controller)
   - Systemd unit in [argononed.service](meta-rpilinux/recipes-rpi-utils/argonone/systemd/argononed.service)
+  - Default [config.toml](meta-rpilinux/recipes-rpi-utils/argonone/files/config.toml)
 * Custom `config.txt` and `cmdline.txt` in [bcm2711-bootfiles (`bcm2835-bootfiles.bbappend`)](meta-rpilinux/recipes-bsp/bootfiles/bcm2835-bootfiles.bbappend)
 * [sshd_config](meta-rpilinux/recipes-extended/openssh/files/sshd_config) setup in [`openssh_%.bbappend`](meta-rpilinux/recipes-extended/openssh/openssh_%25.bbappend)
   - `sshd_config` only allows user `me` via pki
@@ -146,7 +147,8 @@ sudo tar -xjf /path/tobuild/tmp/deploy/images/raspberrypi4-64/rpilinux-image-ras
 * Set `xeoma` server admin password
     ```bash
     systemctl stop xeoma
-    xeoma -setpassword ...
+    xeoma -programdir /mnt/xeoma/data -setpassword ...
+    chown -R xeoma:xeoma /mnt/xeoma/data
     systemctl start xeoma
     ```
 * Format the USB3 SSD (if needed)

@@ -11,6 +11,7 @@
 # IPTABLES_ICMP_ALLOW_IP_RANGE : local network ip addr range accepting ICMP
 # IPTABLES_SSH_ALLOW_CIDR : local network CIDR range accepting ssh connections
 # IPTABLES_ROUTER_IP : local IP address of the router
+# IPTABLES_VPN_CIDR : VPN CIDR range connecting to xeoma server to accept
 
 *filter
 
@@ -39,6 +40,9 @@
 
 # Allow local network client connections to the xeoma server
 -A INPUT -m iprange --src-range IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE -p tcp --match multiport --dports IPTABLES_XEOMA_SERVER_ALLOW_PORT_RANGE -j ACCEPT
+
+# Allow VPN client connections to the xeoma server
+-A INPUT -s IPTABLES_VPN_CIDR -p tcp --match multiport --dports IPTABLES_XEOMA_SERVER_ALLOW_PORT_RANGE -j ACCEPT
 
 # Allow local network HTTPS connections to the xeoma server
 -A INPUT -m iprange --src-range IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE -p tcp --dport 443 -j ACCEPT

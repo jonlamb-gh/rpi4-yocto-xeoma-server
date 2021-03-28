@@ -21,11 +21,14 @@ do_install_append() {
     if [ -z "${IPTABLES_ICMP_ALLOW_IP_RANGE}" ]; then
         bbfatal "Missing env var IPTABLES_ICMP_ALLOW_IP_RANGE"
     fi
-    if [ -z "${IPTABLES_SSH_ALLOW_CIDR}" ]; then	
-        bbfatal "Missing env var IPTABLES_SSH_ALLOW_CIDR"	
+    if [ -z "${IPTABLES_SSH_ALLOW_CIDR}" ]; then
+        bbfatal "Missing env var IPTABLES_SSH_ALLOW_CIDR"
     fi
-    if [ -z "${IPTABLES_ROUTER_IP}" ]; then	
-        bbfatal "Missing env var IPTABLES_ROUTER_IP"	
+    if [ -z "${IPTABLES_ROUTER_IP}" ]; then
+        bbfatal "Missing env var IPTABLES_ROUTER_IP"
+    fi
+    if [ -z "${IPTABLES_VPN_CIDR}" ]; then
+        bbfatal "Missing env var IPTABLES_VPN_CIDR"
     fi
 
     # Delimter == '#'
@@ -37,4 +40,5 @@ do_install_append() {
     sed -i "s#IPTABLES_ICMP_ALLOW_IP_RANGE#${IPTABLES_ICMP_ALLOW_IP_RANGE}#" ${D}/${sysconfdir}/iptables/iptables.rules
     sed -i "s#IPTABLES_SSH_ALLOW_CIDR#${IPTABLES_SSH_ALLOW_CIDR}#" ${D}/${sysconfdir}/iptables/iptables.rules
     sed -i "s#IPTABLES_ROUTER_IP#${IPTABLES_ROUTER_IP}#" ${D}/${sysconfdir}/iptables/iptables.rules
+    sed -i "s#IPTABLES_VPN_CIDR#${IPTABLES_VPN_CIDR}#" ${D}/${sysconfdir}/iptables/iptables.rules
 }

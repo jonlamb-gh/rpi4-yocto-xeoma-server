@@ -7,6 +7,12 @@ TODOS
 * ssl/tls configs
 * change ip tables xeoma server range to just the single ip, doesn't need to be a range
 * use a config file with env var for path instead of all the individual vars
+* use local time server or see if RTC will fit in the case
+* update the xeoma recipe to not download the latest, use version
+  ```
+  # 21.8.10
+  https://felenasoft.com/xeoma/downloads/2021-08-10/linux/xeoma_linux.tgz
+  ```
 
 other opts for systemd unit
 ```
@@ -20,6 +26,8 @@ other opts for systemd unit
 * [Raspberry Pi 4](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/)
 * [Argon ONE M.2 Case](https://www.argon40.com/argon-one-m-2-case-for-raspberry-pi-4.html)
   - Replacement fan: RDK cooler, 5V, 0.13A, 30x30x10mm, model RA03010HD5
+  - See also [this thread](https://www.martinrowan.co.uk/2019/12/argon-one-pi-4/) for other fans
+  - SHCHV LD3007MS's work ok too
 * [Argon ONE M.2 Expansion Board](https://www.argon40.com/argon-one-m-2-expansion-board.html)
 * [5V 3A USB-C Power Supply](https://www.amazon.com/gp/product/B07X8C6PV6/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1)
 * [Samsung 32GB EVO Plus Class 10 Micro SDHC](https://www.amazon.com/gp/product/B00WR4IJBE/ref=ppx_yo_dt_b_asin_title_o03_s00?ie=UTF8&psc=1)

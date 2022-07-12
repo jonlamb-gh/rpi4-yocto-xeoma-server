@@ -5,7 +5,7 @@ LICENSE = "MIT"
 inherit cargo systemd
 
 SRC_URI = "gitsm://github.com/jonlamb-gh/rpi4-argon-fan-controller.git;protocol=https;branch=master"
-SRCREV="56d9885f5b8733bf7a78984a8d9305976248cb35"
+SRCREV="fc1a9d4368b2e851e1feed0dd4b4472f63718e67"
 S = "${WORKDIR}/git"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=da03eaa3ade12bc7503887bf98bfea8b"
 

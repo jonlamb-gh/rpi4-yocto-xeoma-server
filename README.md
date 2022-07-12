@@ -8,11 +8,7 @@ TODOS
 * change ip tables xeoma server range to just the single ip, doesn't need to be a range
 * use a config file with env var for path instead of all the individual vars
 * use local time server or see if RTC will fit in the case
-* update the xeoma recipe to not download the latest, use version
-  ```
-  # 21.8.10
-  https://felenasoft.com/xeoma/downloads/2021-08-10/linux/xeoma_linux.tgz
-  ```
+* disable bluetooth
 
 other opts for systemd unit
 ```

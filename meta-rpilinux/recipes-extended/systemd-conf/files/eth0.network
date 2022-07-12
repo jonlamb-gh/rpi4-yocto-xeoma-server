@@ -1,0 +1,9 @@
+[Match]
+Name=eth0
+KernelCommandLine=!nfsroot
+
+[Network]
+DHCP=no
+DNS=192.168.2.3
+Address=192.168.2.100/24
+Gateway=192.168.2.1

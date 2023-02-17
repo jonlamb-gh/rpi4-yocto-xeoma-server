@@ -6,11 +6,11 @@ RDEPENDS_${PN} = "libusb1 hidapi alsa-lib udev"
 
 inherit systemd useradd
 
-# Version: 22.10.12
+# Version: 23.1.25
 # Set SRC_URI subdir to ${P} so that files are unpacked into ${S}
-SRC_URI = "https://felenasoft.com/xeoma/downloads/2022-10-12/linux/xeoma_linux_arm8.tgz;subdir=${P}"
-SRC_URI[md5sum] = "ddda32e00ca7280a3d130bacc354b279"
-SRC_URI[sha256sum] = "5414580b5429e8fdf165226da133730a615ef776d1f41fe7e406e6a438d8a715"
+SRC_URI = "https://felenasoft.com/xeoma/downloads/2023-01-25/linux/xeoma_linux_arm8.tgz;subdir=${P}"
+SRC_URI[md5sum] = "b98d812525f0f904e771391b441c607c"
+SRC_URI[sha256sum] = "a991ca7d694f3f81d84fbe8f82e0fd02b7a869f9056eab56bc75bf4b0a107128"
 
 # Comes pre-stripped
 INSANE_SKIP_${PN} = "ldflags"

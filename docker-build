@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+container_image=${1:-rpi4-yocto-xeoma-server}
+
+docker build -t ${container_image} .
+
+docker run \
+    -it --rm \
+    --net=host \
+    --volume "${PWD}":/rpi4-yocto-xeoma-server \
+    --env IPTABLES_XEOMA_RTSP_UDP_ALLOW_PORT_RANGE \
+    --env IPTABLES_XEOMA_RTSP_ALLOW_IP_RANGE \
+    --env IPTABLES_XEOMA_SERVER_ALLOW_PORT_RANGE \
+    --env IPTABLES_XEOMA_SERVER_ALLOW_IP_RANGE \
+    --env IPTABLES_XEOMA_HTTPS_ALLOW_IP_RANGE \
+    --env IPTABLES_ICMP_ALLOW_IP_RANGE \
+    --env IPTABLES_SSH_ALLOW_CIDR \
+    --env IPTABLES_ROUTER_IP \
+    --env IPTABLES_VPN_CIDR \
+    --env SSH_AUTH_KEYS_ME_USER \
+    --env BB_ENV_EXTRAWHITE \
+    ${container_image} \
+    bash
+
+exit 0

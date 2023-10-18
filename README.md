@@ -9,6 +9,8 @@ TODOS
 * use a config file with env var for path instead of all the individual vars
 * use local time server or see if RTC will fit in the case
 * disable bluetooth
+* update `/etc/systemd/system.conf`, enable watchdog
+  https://raspberrypi.stackexchange.com/questions/108080/watchdog-on-the-rpi4
 
 other opts for systemd unit
 ```
